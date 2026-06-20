@@ -7,6 +7,8 @@ import Preloader from "../../components/Preloader/Preloader.jsx";
 import { useAuth } from "../../context/AuthContext";
 import { deleteMediaStatus, getMediaStatuses, saveMediaStatus } from "../../api/mediaStatuses";
 
+import { API_URL } from "./api";
+
 const CATALOG_LIMIT = 24;
 
 const sections = [

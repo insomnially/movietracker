@@ -6,6 +6,8 @@ import { getMediaStatuses } from "../../api/mediaStatuses";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import "./ProfilePage.css";
 
+import { API_URL } from "./api";
+
 const statusNames = {
     favorite: "Хочу посмотреть",
     watching: "Смотрю",

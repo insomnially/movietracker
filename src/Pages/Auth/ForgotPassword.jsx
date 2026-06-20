@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import "./Auth.css";
+import { API_URL } from "./api";
 
 function ForgotPasswordPage() {
     const [email, setEmail] = useState("");

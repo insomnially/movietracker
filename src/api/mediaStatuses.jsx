@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { API_URL } from "./api";
 
 export async function getMediaStatuses(token, status) {
     const params = new URLSearchParams();
