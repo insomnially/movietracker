@@ -516,10 +516,6 @@ app.get("/api/movie/:id", async (req, res) => {
     }
 });
 
-app.listen(process.env.PORT || 5000, () => {
-    console.log(`Server running on port ${process.env.PORT || 5000}`);
-});
-
 app.get("/api/catalog/:section", async (req, res) => {
     try {
         const section = req.params.section;
@@ -727,4 +723,10 @@ app.put("/api/user/avatar", authMiddleware, uploadAvatar.single("avatar"), async
         console.error(err);
         res.status(500).json({ message: "Ошибка при загрузке аватарки" });
     }
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
 });
