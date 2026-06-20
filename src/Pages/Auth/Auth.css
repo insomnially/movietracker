@@ -1,0 +1,113 @@
+.auth-page {
+    min-height: 100vh;
+    background: radial-gradient(circle at top, rgba(108, 92, 231, 0.22), transparent 34%),
+        #171A22;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.auth-card {
+    width: min(440px, 100%);
+    background: rgba(19, 22, 27, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 26px;
+    padding: 30px;
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.38);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.auth-kicker {
+    margin: 0;
+    color: #c9c3ff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.auth-card h1 {
+    margin: 0;
+    color: white;
+    font-size: 34px;
+    line-height: 1.1;
+}
+
+.auth-subtitle {
+    margin: 0 0 8px;
+    color: #9ca3af;
+    line-height: 1.5;
+}
+
+.auth-card input {
+    width: 100%;
+    min-height: 52px;
+    border-radius: 15px;
+    border: 1px solid transparent;
+    outline: none;
+    background: #252936;
+    color: white;
+    padding: 0 16px;
+    transition: 0.2s ease;
+}
+
+.auth-card input:focus {
+    border-color: #6c5ce7;
+    box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.14);
+}
+
+.auth-card button {
+    min-height: 52px;
+    border: none;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #6c7bff, #8b5cf6);
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.auth-card button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+.auth-card button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.auth-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.auth-links a {
+    color: #c9c3ff;
+    font-size: 14px;
+}
+
+.auth-error {
+    background: rgba(255, 76, 76, 0.12);
+    border: 1px solid rgba(255, 76, 76, 0.32);
+    color: #ff9b9b;
+    padding: 12px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+}
+
+.auth-success {
+    background: rgba(50, 215, 120, 0.12);
+    border: 1px solid rgba(50, 215, 120, 0.32);
+    color: #8df2b0;
+    padding: 12px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+}

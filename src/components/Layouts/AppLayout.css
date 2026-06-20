@@ -1,0 +1,55 @@
+:root {
+    --bg-main: #171A22;
+    --bg-sidebar: #101319;
+    --bg-card: #232833;
+    --bg-input: #252936;
+    --bg-input-dark: #1b1f2a;
+    --accent: #6c5ce7;
+    --accent-soft: #50417385;
+    --text-main: #ffffff;
+    --text-muted: #b8b8b8;
+    --sidebar-open: clamp(280px, 20vw, 380px);
+    --sidebar-collapsed: 96px;
+}
+
+.body_movietracker {
+    min-height: 100vh;
+    background-color: var(--bg-main);
+}
+
+.movietracker_wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main_movietracker {
+    min-height: 100vh;
+    padding-bottom: 40px;
+    transition: 0.3s ease;
+}
+
+.main_movietracker.shift-open,
+.main_movietracker.shift-collapsed {
+    margin-left: var(--sidebar-collapsed);
+    width: calc(100% - var(--sidebar-collapsed));
+}
+
+@media (max-width: 900px) {
+    :root {
+        --sidebar-open: 260px;
+        --sidebar-collapsed: 84px;
+    }
+}
+
+@media (max-width: 760px) {
+    .movietracker_wrapper {
+        display: block;
+        padding-bottom: 82px;
+    }
+
+    .main_movietracker.shift-open,
+    .main_movietracker.shift-collapsed {
+        margin-left: 0;
+        width: 100%;
+    }
+}

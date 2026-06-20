@@ -1,0 +1,75 @@
+.status-page {
+    min-height: 100vh;
+    padding: 32px;
+    color: white;
+}
+
+.status-hero {
+    width: min(1180px, 100%);
+    margin: 0 auto 24px;
+    padding: 26px;
+    border-radius: 28px;
+    background: linear-gradient(135deg, rgba(108, 92, 231, 0.22), rgba(255, 255, 255, 0.04));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-kicker {
+    margin: 0 0 8px;
+    color: #c9c3ff;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.status-hero h1 {
+    margin: 0 0 8px;
+    font-size: clamp(2rem, 4vw, 4rem);
+}
+
+.status-hero p {
+    margin: 0;
+    color: #b8b8b8;
+}
+
+.status-content {
+    width: min(1180px, 100%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+}
+
+.status-content.details-open {
+    grid-template-columns: minmax(0, 1fr) minmax(330px, 420px);
+    align-items: start;
+}
+
+.status-list {
+    min-width: 0;
+}
+
+.status-message {
+    padding: 34px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.045);
+    color: #b8b8b8;
+    text-align: center;
+}
+
+@media (max-width: 1100px) {
+    .status-content.details-open {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .status-page {
+        padding: 16px;
+    }
+
+    .status-hero {
+        padding: 20px;
+        border-radius: 22px;
+    }
+}
