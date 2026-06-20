@@ -1,5 +1,9 @@
 node_modules
-npm-debug.log
-.env
+dist
 .git
-.gitignore
+.env
+.env.local
+.env.production
+movies_db.dump
+movies_25k.csv
+data_films.csv

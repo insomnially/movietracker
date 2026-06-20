@@ -10,7 +10,14 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+.env
+.env.local
+.env.production
+movies_db.dump
+movies_25k.csv
+data_films.csv
 *.local
+
 
 # Editor directories and files
 .vscode/*
