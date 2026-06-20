@@ -62,7 +62,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const avatarDir = path.join(__dirname, "uploads", "avatars");
 
-if (!fs.existsSync(avatarDir)) {
+if (!process.env.VERCEL && !fs.existsSync(avatarDir)) {
     fs.mkdirSync(avatarDir, { recursive: true });
 }
 
@@ -703,6 +703,12 @@ app.get("/api/user", authMiddleware, async (req, res) => {
 
 app.put("/api/user/avatar", authMiddleware, uploadAvatar.single("avatar"), async (req, res) => {
     try {
+        if (process.env.VERCEL) {
+            return res.status(501).json({
+                message: "Загрузка аватарок на Vercel пока отключена"
+            });
+        }
+
         if (!req.file) {
             return res.status(400).json({ message: "Файл не загружен" });
         }
@@ -727,6 +733,10 @@ app.put("/api/user/avatar", authMiddleware, uploadAvatar.single("avatar"), async
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on port ${PORT}`);
-});
+if (!process.env.VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;

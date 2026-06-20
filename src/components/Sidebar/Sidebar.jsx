@@ -13,8 +13,6 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef(null);
 
-    const API_URL = "http://localhost:5000";
-
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -57,7 +55,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
             return user.avatar_url;
         }
 
-        return `http://localhost:5000${user.avatar_url}`;
+        return (`${API_URL}${user.avatar_url}`);
     };
 
     const avatarSrc = getAvatarSrc();

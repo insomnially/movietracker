@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import "./Auth.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
 function LoginPage() {
     const navigate = useNavigate();
     const { login } = useAuth();

@@ -24,8 +24,6 @@ function ProfilePage() {
 
     const fileInputRef = useRef(null);
 
-    const API_URL = "http://localhost:5000";
-
     useEffect(() => {
         const loadProfileUser = async () => {
             try {

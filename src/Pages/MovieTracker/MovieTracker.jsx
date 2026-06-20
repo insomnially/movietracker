@@ -9,8 +9,6 @@ import Preloader from "../../components/Preloader/Preloader.jsx";
 import { useAuth } from "../../context/AuthContext";
 import { deleteMediaStatus, getMediaStatuses, saveMediaStatus } from "../../api/mediaStatuses";
 
-const API_BASE = "http://localhost:5000";
-
 const statusOptions = [
     {
         value: "",
@@ -199,7 +197,7 @@ function MovieTracker() {
             .replaceAll("\\", "/")
             .replace(/^\.?\//, "");
 
-        return `${API_BASE}/${cleanPoster}`;
+        return `${API_URL}/${cleanPoster}`;
     };
 
     const loadStatuses = async () => {
@@ -332,7 +330,7 @@ function MovieTracker() {
             params.set("hasTrailer", "1");
         }
 
-        const res = await fetch(`${API_BASE}/api/movies?${params.toString()}`);
+        const res = await fetch(`${API_URL}/api/movies?${params.toString()}`);
 
         if (!res.ok) {
             throw new Error("Ошибка загрузки фильмов");
@@ -345,7 +343,7 @@ function MovieTracker() {
         const normalizedMovie = normalizeMovie(movie);
 
         try {
-            const res = await fetch(`${API_BASE}/api/movie/${normalizedMovie.id}`);
+            const res = await fetch(`${API_URL}/api/movie/${normalizedMovie.id}`);
 
             if (!res.ok) {
                 setSelectedMovie(normalizedMovie);

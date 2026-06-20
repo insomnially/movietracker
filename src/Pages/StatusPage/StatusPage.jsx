@@ -6,8 +6,6 @@ import { useAuth } from "../../context/AuthContext";
 import { deleteMediaStatus, getMediaStatuses, saveMediaStatus } from "../../api/mediaStatuses";
 import "./StatusPage.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
 const statusOptions = [
     {
         value: "",

@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import "./Auth.css";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
 function ResetPasswordPage() {
     const navigate = useNavigate();
     const [params] = useSearchParams();
