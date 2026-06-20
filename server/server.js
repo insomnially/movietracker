@@ -16,13 +16,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const pool = new Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT
-});
+const pool = new Pool(
+    process.env.DATABASE_URL
+        ? {
+            connectionString: process.env.DATABASE_URL,
+            ssl: process.env.NODE_ENV === "production"
+                ? { rejectUnauthorized: false }
+                : false
+        }
+        : {
+            user: process.env.DB_USER || "postgres",
+            host: process.env.DB_HOST || "localhost",
+            database: process.env.DB_NAME || "movies_db",
+            password: process.env.DB_PASSWORD,
+            port: process.env.DB_PORT || 5432
+        }
+);
 
 app.use("/api/auth", authRoutes(pool));
 app.use("/api/media-statuses", mediaStatusRoutes(pool));
@@ -80,6 +89,23 @@ const uploadAvatar = multer({
         cb(null, true);
     }
 });
+
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.CLIENT_URL
+].filter(Boolean);
+
+app.use(cors({
+    origin(origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+            return;
+        }
+
+        callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true
+}));
 
 function authMiddleware(req, res, next) {
     const authHeader = req.headers.authorization;
