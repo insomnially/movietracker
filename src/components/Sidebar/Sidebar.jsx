@@ -8,7 +8,7 @@ import { LuEyeClosed } from "react-icons/lu";
 import { IoIosHeartDislike, IoIosSettings, IoIosArrowDown } from "react-icons/io";
 import { MdAccountCircle } from "react-icons/md";
 
-import { API_URL } from "./api";
+import { API_URL } from '../api'
 
 function Sidebar({ sidebarOpen, setSidebarOpen }) {
     const [user, setUser] = useState(null);
