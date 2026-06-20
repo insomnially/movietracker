@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import "./Auth.css";
 
-import { API_URL } from '../api'
+import { API_URL } from '../../api'
 
 function RegisterPage() {
     const navigate = useNavigate();

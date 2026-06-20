@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
 import "./Auth.css";
-import { API_URL } from '../api'
+import { API_URL } from '../../api'
 
 function ResetPasswordPage() {
     const navigate = useNavigate();
