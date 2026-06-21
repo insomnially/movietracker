@@ -2,7 +2,7 @@ import Preloader from "../../components/Preloader/Preloader";
 import { Link, useNavigate } from "react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getMediaStatuses } from "../../api/mediaStatuses";
+import { getMediaStatuses } from "../../../api/mediaStatuses";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import "./ProfilePage.css";
 
