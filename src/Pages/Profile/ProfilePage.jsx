@@ -89,11 +89,13 @@ function ProfilePage() {
     const getAvatarSrc = (avatarUrl) => {
         if (!avatarUrl) return null;
 
-        if (avatarUrl.startsWith("http")) {
-            return avatarUrl;
+        const cleanAvatarUrl = String(avatarUrl).replace(/^\.?\//, "/");
+
+        if (cleanAvatarUrl.startsWith("http")) {
+            return cleanAvatarUrl;
         }
 
-        return `${API_URL}${avatarUrl.startsWith("/") ? avatarUrl : `/${avatarUrl}`}`;
+        return `${API_URL}${cleanAvatarUrl.startsWith("/") ? cleanAvatarUrl : `/${cleanAvatarUrl}`}`;
     };
 
     const avatarSrc = getAvatarSrc(currentUser?.avatar_url);
