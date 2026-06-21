@@ -1,4 +1,5 @@
-require("dotenv").config();
+const pathenv = require("path");
+require("dotenv").config({ path: pathenv.join(__dirname, "..", ".env") });
 
 const express = require("express");
 const cors = require("cors");
@@ -38,16 +39,18 @@ app.use("/api/media-statuses", mediaStatusRoutes(pool));
 
 function staticFolder(folderName) {
     const variants = [
-        path.join(__dirname, folderName),
+        path.join(process.cwd(), "public", folderName),
+        path.join(process.cwd(), folderName),
+        path.join(__dirname, "..", "public", folderName),
         path.join(__dirname, "..", folderName),
-        path.join(process.cwd(), folderName)
+        path.join(__dirname, folderName)
     ];
 
     const found = variants.find((folderPath) => fs.existsSync(folderPath));
 
     if (!found) {
         console.log(`STATIC NOT FOUND: ${folderName}`);
-        return path.join(__dirname, folderName);
+        return path.join(process.cwd(), "public", folderName);
     }
 
     console.log(`STATIC ${folderName}: ${found}`);
@@ -709,18 +712,33 @@ app.put("/api/user/avatar", authMiddleware, uploadAvatar.single("avatar"), async
             return res.status(400).json({ message: "Файл не загружен" });
         }
 
-        const { put } = await import("@vercel/blob");
-
         const userId = req.user.id;
         const ext = path.extname(req.file.originalname) || ".jpg";
-        const filename = `avatars/avatar_${userId}_${Date.now()}${ext}`;
+        let avatarUrl = "";
 
-        const blob = await put(filename, req.file.buffer, {
-            access: "public",
-            contentType: req.file.mimetype
-        });
+        if (process.env.BLOB_READ_WRITE_TOKEN) {
+            const { put } = await import("@vercel/blob");
 
-        const avatarUrl = blob.url;
+            const filename = `avatars/avatar_${userId}_${Date.now()}${ext}`;
+
+            const blob = await put(filename, req.file.buffer, {
+                access: "public",
+                contentType: req.file.mimetype
+            });
+
+            avatarUrl = blob.url;
+        } else {
+            if (!fs.existsSync(avatarDir)) {
+                fs.mkdirSync(avatarDir, { recursive: true });
+            }
+
+            const filename = `avatar_${userId}_${Date.now()}${ext}`;
+            const filePath = path.join(avatarDir, filename);
+
+            fs.writeFileSync(filePath, req.file.buffer);
+
+            avatarUrl = `/uploads/avatars/${filename}`;
+        }
 
         const result = await pool.query(
             `UPDATE users

@@ -168,6 +168,7 @@ function CatalogPage() {
     const [statusFilter, setStatusFilter] = useState("");
 
     const cardRefs = useRef({});
+    const catalogRequestRef = useRef(0);
     const totalPages = Math.ceil(total / CATALOG_LIMIT);
 
     const normalizeItem = (item) => {
@@ -196,6 +197,8 @@ function CatalogPage() {
     };
 
     const loadCatalog = async () => {
+        const requestId = ++catalogRequestRef.current;
+
         setLoading(true);
         setError("");
 
@@ -241,19 +244,30 @@ function CatalogPage() {
             }
 
             const data = await response.json();
+
+            if (requestId !== catalogRequestRef.current) {
+                return;
+            }
+
             const results = Array.isArray(data.results) ? data.results : [];
             const normalized = results.map(normalizeItem);
 
             setItems(normalized);
             setTotal(Number(data.total) || 0);
         } catch (error) {
+            if (requestId !== catalogRequestRef.current) {
+                return;
+            }
+
             console.error(error);
             setItems([]);
             setTotal(0);
             setError("Не удалось загрузить каталог");
         } finally {
-            setLoading(false);
-            setFirstLoading(false);
+            if (requestId === catalogRequestRef.current) {
+                setLoading(false);
+                setFirstLoading(false);
+            }
         }
     };
 
@@ -310,11 +324,19 @@ function CatalogPage() {
         : items;
 
     const changeSection = (section) => {
+        if (section === activeSection) {
+            return;
+        }
+
         setActiveSection(section);
         setPage(1);
         setSelectedItem(null);
         setMediaType("");
         setStatusFilter("");
+        setItems([]);
+        setTotal(0);
+        setError("");
+        setFirstLoading(true);
     };
 
     const resetFilters = () => {
@@ -403,82 +425,30 @@ function CatalogPage() {
         setSelectedItem(normalizeItem(item));
     };
 
-    const handleStatusChange = async (item, nextStatus) => {
-        if (!isAuth || !token) {
-            return;
-        }
+const handleStatusChange = async (item, nextStatus) => {
+    if (!isAuth || !token) {
+        return;
+    }
 
-        const renderDetails = () => {
-        if (!selectedItem) {
-            return null;
-        }
+    const normalizedItem = normalizeItem(item);
+    const itemKey = getMediaKey(normalizedItem);
 
-        return (
-            <MovieDetails
-                item={selectedItem}
-                getPosterSrc={getPosterSrc}
-                getTypeLabel={getTypeLabel}
-                scrollToSelected={scrollToSelectedCard}
-                onClose={() => setSelectedItem(null)}
-                variant="catalog"
-                isAuth={isAuth}
-                statusOptions={statusOptions}
-                currentStatus={selectedStatus}
-                onStatusChange={handleStatusChange}
-            />
-        );
-    };
+    try {
+        if (!nextStatus) {
+            await deleteMediaStatus(token, itemKey);
 
-        const normalizedItem = normalizeItem(item);
-        const itemKey = getMediaKey(normalizedItem);
-
-        try {
-            if (!nextStatus) {
-                await deleteMediaStatus(token, itemKey);
-
-                setStatusMap((prev) => {
-                    const copy = { ...prev };
-                    delete copy[itemKey];
-                    return copy;
-                });
-
-                setItems((prev) => (
-                    prev.map((el) => (
-                        getMediaKey(el) === itemKey
-                            ? {
-                                ...el,
-                                status: ""
-                            }
-                            : el
-                    ))
-                ));
-
-                setSelectedItem((prev) => (
-                    prev && getMediaKey(prev) === itemKey
-                        ? {
-                            ...prev,
-                            status: ""
-                        }
-                        : prev
-                ));
-
-                return;
-            }
-
-            const saved = await saveMediaStatus(token, normalizedItem, nextStatus);
-            const savedStatus = saved?.status || nextStatus;
-
-            setStatusMap((prev) => ({
-                ...prev,
-                [itemKey]: savedStatus
-            }));
+            setStatusMap((prev) => {
+                const copy = { ...prev };
+                delete copy[itemKey];
+                return copy;
+            });
 
             setItems((prev) => (
                 prev.map((el) => (
                     getMediaKey(el) === itemKey
                         ? {
                             ...el,
-                            status: savedStatus
+                            status: ""
                         }
                         : el
                 ))
@@ -488,14 +458,66 @@ function CatalogPage() {
                 prev && getMediaKey(prev) === itemKey
                     ? {
                         ...prev,
-                        status: savedStatus
+                        status: ""
                     }
                     : prev
             ));
-        } catch (error) {
-            console.error(error);
+
+            return;
         }
-    };
+
+        const saved = await saveMediaStatus(token, normalizedItem, nextStatus);
+        const savedStatus = saved?.status || nextStatus;
+
+        setStatusMap((prev) => ({
+            ...prev,
+            [itemKey]: savedStatus
+        }));
+
+        setItems((prev) => (
+            prev.map((el) => (
+                getMediaKey(el) === itemKey
+                    ? {
+                        ...el,
+                        status: savedStatus
+                    }
+                    : el
+            ))
+        ));
+
+        setSelectedItem((prev) => (
+            prev && getMediaKey(prev) === itemKey
+                ? {
+                    ...prev,
+                    status: savedStatus
+                }
+                : prev
+        ));
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const renderDetails = () => {
+    if (!selectedItem) {
+        return null;
+    }
+
+    return (
+        <MovieDetails
+            item={selectedItem}
+            getPosterSrc={getPosterSrc}
+            getTypeLabel={getTypeLabel}
+            scrollToSelected={scrollToSelectedCard}
+            onClose={() => setSelectedItem(null)}
+            variant="catalog"
+            isAuth={isAuth}
+            statusOptions={statusOptions}
+            currentStatus={selectedStatus}
+            onStatusChange={handleStatusChange}
+        />
+    );
+};
 
     return (
         <main className="catalog-page">
@@ -692,8 +714,13 @@ function CatalogPage() {
                     </div>
 
                     {firstLoading ? (
-                        <Preloader text="Загружаем каталог" variant="block" />
-                    ) : (
+                    <div className="catalog-full-loader">
+                        <Preloader
+                            text={`Загружаем ${sections.find((section) => section.id === activeSection)?.title.toLowerCase()}`}
+                            variant="block"
+                        />
+                    </div>
+                ) : (
                         <>
                             {error && (
                                 <div className="catalog-message">
@@ -758,20 +785,8 @@ function CatalogPage() {
                     )}
                 </div>
 
-                {selectedItem && effectiveMode === "section" && renderDetails(
-                    <MovieDetails
-                        item={selectedItem}
-                        getPosterSrc={getPosterSrc}
-                        getTypeLabel={getTypeLabel}
-                        scrollToSelected={scrollToSelectedCard}
-                        onClose={() => setSelectedItem(null)}
-                        variant="catalog"
-                        isAuth={isAuth}
-                        statusOptions={statusOptions}
-                        currentStatus={selectedStatus}
-                        onStatusChange={handleStatusChange}
-                    />
-                )}
+                {selectedItem && effectiveMode === "section" && renderDetails()}
+
             </section>
 
             {selectedItem && effectiveMode === "modal" && (

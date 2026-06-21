@@ -340,8 +340,49 @@
         overflow: visible;
     }
 
-    .sidebarandback,
+    .sidebarandback {
+    display: flex;
+    width: 58px;
+    min-width: 58px;
+    height: 58px;
+    align-items: center;
+    justify-content: center;
+    }
+
     .sidebar-arrow {
+        display: none;
+    }
+
+    .logo_movietracker {
+        width: 58px;
+        min-width: 58px;
+        height: 58px;
+    }
+
+    .logo_movietracker a {
+        width: 58px;
+        min-width: 58px;
+        height: 58px;
+        min-height: 58px;
+        padding: 0;
+        border-radius: 14px;
+        justify-content: center;
+        gap: 0;
+    }
+
+    .logo_movietracker a:hover,
+    .logo_movietracker a.active {
+        background-color: var(--accent-soft);
+        transform: translateY(-2px);
+    }
+
+    .logo_movietracker img {
+        width: 34px;
+        height: 34px;
+        display: block;
+    }
+
+    .logo_movietracker h1 {
         display: none;
     }
 

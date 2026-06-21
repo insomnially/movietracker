@@ -1,6 +1,7 @@
 import { NavLink } from "react-router";
 import "./Sidebar.css";
 import { useEffect, useRef, useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 import { IoIosApps } from "react-icons/io";
 import { FaHeart, FaEye, FaChartBar } from "react-icons/fa";
@@ -11,9 +12,26 @@ import { MdAccountCircle } from "react-icons/md";
 import { API_URL } from '../../../api'
 
 function Sidebar({ sidebarOpen, setSidebarOpen }) {
-    const [user, setUser] = useState(null);
+    const { user, token } = useAuth();
+    const [sidebarUser, setSidebarUser] = useState(user);
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef(null);
+
+    useEffect(() => {
+    setSidebarUser(user);
+}, [user]);
+
+useEffect(() => {
+    const handleUserUpdated = (event) => {
+        setSidebarUser(event.detail);
+    };
+
+    window.addEventListener("user-updated", handleUserUpdated);
+
+    return () => {
+        window.removeEventListener("user-updated", handleUserUpdated);
+    };
+}, []);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -31,7 +49,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 if (!res.ok) return;
 
                 const data = await res.json();
-                setUser(data);
+                setSidebarUser(data);
             } catch (err) {
                 console.error(err);
             }
@@ -50,7 +68,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
         return fullName || user.username || user.email || "Профиль";
     };
 
-    const currentUser = profileUser || user;
+    const currentUser = sidebarUser || user;
 
     const getAvatarSrc = (avatarUrl) => {
         if (!avatarUrl) return "/images/default-avatar.png";
@@ -75,11 +93,11 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                 </div>
 
                 <div className="logo_movietracker">
-                    <NavLink to="/movietracker">
-                        <img src="/images/play.png" alt="" />
-                        <h1>MOVIETRACKER</h1>
-                    </NavLink>
-                </div>
+                <NavLink to="/movietracker" end>
+                    <img src="/images/play.png" alt="" />
+                    <h1>MOVIETRACKER</h1>
+                </NavLink>
+            </div>
             </div>
 
             <ul className="sidebar_movietracker_ul">
