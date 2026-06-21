@@ -1,4 +1,4 @@
-import { API_URL } from '../api'
+import { API_URL } from '../../api'
 
 export async function getMediaStatuses(token, status) {
     const params = new URLSearchParams();

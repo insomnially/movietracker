@@ -731,6 +731,10 @@ app.put("/api/user/avatar", authMiddleware, uploadAvatar.single("avatar"), async
     }
 });
 
+app.get("/api/health", (req, res) => {
+    res.status(200).send("OK");
+});
+
 const PORT = process.env.PORT || 5000;
 
 if (!process.env.VERCEL) {

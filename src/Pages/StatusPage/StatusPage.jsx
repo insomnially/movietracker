@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { deleteMediaStatus, getMediaStatuses, saveMediaStatus } from "../../api/mediaStatuses";
 import "./StatusPage.css";
 
-import { API_URL } from '../../api'
+import { API_URL } from '../../../api'
 
 const statusOptions = [
     {
