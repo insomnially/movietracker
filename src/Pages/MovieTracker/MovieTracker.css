@@ -1360,6 +1360,143 @@ select {
         width: 38px;
         height: 38px;
     }
+    }
+
+    .legal-watch-panel {
+        width: 100%;
+        padding: 16px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.055);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .legal-watch-head h3 {
+        margin: 0 0 4px;
+        color: white;
+        font-size: 1rem;
+    }
+
+    .legal-watch-head p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.58);
+        font-size: 0.82rem;
+        line-height: 1.35;
+    }
+
+    .legal-watch-primary {
+        min-height: 52px;
+        padding: 10px 16px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #6c7bff, #8b5cf6);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-weight: 800;
+        text-align: center;
+        transition: 0.22s ease;
+    }
+
+    .legal-watch-primary span {
+        color: white;
+        font-size: 0.92rem;
+        white-space: nowrap;
+    }
+
+    .legal-watch-primary-logo {
+        max-width: 130px;
+        max-height: 30px;
+        object-fit: contain;
+        display: block;
+    }
+
+    .legal-watch-primary:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.08);
+    }
+
+    .legal-watch-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .legal-watch-link {
+        min-height: 50px;
+        padding: 4px 5px;
+        border-radius: 100px;
+        background: rgba(255, 255, 255, 0.075);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s ease;
+        overflow: hidden;
+    }
+
+    .legal-watch-logo {
+        max-width: 90px;
+        max-height: 26px;
+        object-fit: contain;
+        display: block;
+    }
+
+    .legal-watch-link:hover {
+        background: rgba(108, 92, 231, 0.28);
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 760px) {
+        .legal-watch-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .legal-watch-primary-logo {
+            max-width: 115px;
+            max-height: 28px;
+        }
+
+        .legal-watch-logo {
+            max-width: 82px;
+            max-height: 24px;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .legal-watch-primary {
+            min-height: 50px;
+            padding: 10px 12px;
+            gap: 10px;
+        }
+
+        .legal-watch-primary span {
+            font-size: 0.82rem;
+        }
+
+        .legal-watch-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 7px;
+        }
+
+        .legal-watch-link {
+            min-height: 46px;
+            border-radius: 12px;
+        }
+
+        .legal-watch-logo {
+            max-width: 76px;
+            max-height: 22px;
+        }
+    }
+
+@media (max-width: 520px) {
+    .legal-watch-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 520px) {

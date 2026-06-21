@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { useNavigate } from "react-router";
 import { ImCross } from "react-icons/im";
 import { PiVideoCameraFill } from "react-icons/pi";
+import { getLegalWatchLinks } from "../../data/legalWatchServices";
 
 const defaultStatusOptions = [
     {
@@ -76,10 +77,10 @@ function MovieDetails({
     const isCatalog = variant === "catalog";
 
     const poster = data.poster || data.poster_local || data.poster_path;
-    const title = data.title;
-    const originalTitle = data.original_title;
+    const title = data.title || data.name || "Без названия";
+    const originalTitle = data.original_title || data.original_name;
     const rating = Number(data.rating || data.vote_average || 0).toFixed(1);
-    const year = data.year || data.release_date?.slice(0, 4) || "Без года";
+    const year = data.year || data.release_date?.slice(0, 4) || data.first_air_date?.slice(0, 4) || "Без года";
     const typeLabel = getTypeLabel ? getTypeLabel(data) : "Фильм";
 
     const detailsClass = isCatalog ? "catalog-details" : "details-section movie-details";
@@ -93,6 +94,9 @@ function MovieDetails({
     const trailerBtnClass = isCatalog ? "catalog-trailer-btn" : "trailer-btn movie-details-trailer";
 
     const finalStatusOptions = statusOptions.length > 0 ? statusOptions : defaultStatusOptions;
+
+    const legalWatchLinks = getLegalWatchLinks(data);
+    const primaryLegalLink = legalWatchLinks[0];
 
     const handleStatusChange = (e) => {
         if (!isAuth) {
@@ -210,12 +214,6 @@ function MovieDetails({
                         </p>
                     )}
 
-                    {data.language && (
-                        <p>
-                            <b>Язык:</b> {data.language}
-                        </p>
-                    )}
-
                     {data.budget !== undefined && formatMoney && (
                         <p>
                             <b>Бюджет:</b> {formatMoney(data.budget)}
@@ -228,6 +226,60 @@ function MovieDetails({
                         </p>
                     )}
                 </div>
+
+                {legalWatchLinks.length > 0 && (
+                    <div className="legal-watch-panel">
+                        <div className="legal-watch-head">
+                            <h3>Где смотреть</h3>
+                            <p>Откроется поиск по названию на официальных сервисах</p>
+                        </div>
+
+                        {primaryLegalLink && (
+                            <a
+                                href={primaryLegalLink.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="legal-watch-primary"
+                                title={primaryLegalLink.title}
+                                aria-label={`Найти на ${primaryLegalLink.title}`}
+                            >
+                                <span>Найти на</span>
+
+                                <img
+                                    src={primaryLegalLink.logo}
+                                    alt={primaryLegalLink.title}
+                                    className="legal-watch-primary-logo"
+                                    onError={(e) => {
+                                        e.currentTarget.style.display = "none";
+                                    }}
+                                />
+                            </a>
+                        )}
+
+                        <div className="legal-watch-grid">
+                            {legalWatchLinks.slice(1).map((link) => (
+                                <a
+                                    key={link.id}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="legal-watch-link"
+                                    title={link.title}
+                                    aria-label={`Найти на ${link.title}`}
+                                >
+                                    <img
+                                        src={link.logo}
+                                        alt={link.title}
+                                        className="legal-watch-logo"
+                                        onError={(e) => {
+                                            e.currentTarget.style.display = "none";
+                                        }}
+                                    />
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {data.trailer_embed && (
                     <button
