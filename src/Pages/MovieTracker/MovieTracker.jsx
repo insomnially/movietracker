@@ -7,7 +7,7 @@ import MovieCard from "../../components/MovieCard/MovieCard";
 import MovieDetails from "../../components/MovieDetails/MovieDetails.jsx";
 import Preloader from "../../components/Preloader/Preloader.jsx";
 import { useAuth } from "../../context/AuthContext";
-import { deleteMediaStatus, getMediaStatuses, saveMediaStatus } from "../../api/mediaStatuses";
+import { deleteMediaStatus, getMediaStatuses, saveMediaStatus } from "../../../api/mediaStatuses.jsx";
 
 import { API_URL } from '../../../api.js'
 

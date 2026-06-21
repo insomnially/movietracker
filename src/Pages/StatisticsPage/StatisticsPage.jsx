@@ -1,7 +1,7 @@
 import Preloader from "../../components/Preloader/Preloader";
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getMediaStatuses } from "../../api/mediaStatuses";
+import { getMediaStatuses } from "../../../api/mediaStatuses";
 import "./StatisticsPage.css";
 
 const statusNames = {
