@@ -85,14 +85,14 @@ function ProfilePage() {
 
     const currentUser = profileUser || user;
 
-    const getAvatarSrc = () => {
-        if (!currentUser?.avatar_url) return null;
+    const getAvatarSrc = (avatarUrl) => {
+        if (!avatarUrl) return "/images/default-avatar.png";
 
-        if (currentUser.avatar_url.startsWith("http")) {
-            return currentUser.avatar_url;
+        if (avatarUrl.startsWith("http")) {
+            return avatarUrl;
         }
 
-        return `${API_URL}${currentUser.avatar_url}`;
+        return `${API_URL}${avatarUrl.startsWith("/") ? avatarUrl : `/${avatarUrl}`}`;
     };
 
     const getUserLetter = () => {
@@ -144,7 +144,7 @@ function ProfilePage() {
         navigate("/login");
     };
 
-    const avatarSrc = getAvatarSrc();
+    const avatarSrc = getAvatarSrc(currentUser?.avatar_url);
 
     return (
         <main className="profile-page">

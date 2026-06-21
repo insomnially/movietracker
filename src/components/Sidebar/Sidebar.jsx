@@ -50,17 +50,17 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
         return fullName || user.username || user.email || "Профиль";
     };
 
-    const getAvatarSrc = () => {
-        if (!user?.avatar_url) return null;
+    const getAvatarSrc = (avatarUrl) => {
+        if (!avatarUrl) return "/images/default-avatar.png";
 
-        if (user.avatar_url.startsWith("http")) {
-            return user.avatar_url;
+        if (avatarUrl.startsWith("http")) {
+            return avatarUrl;
         }
 
-        return (`${API_URL}${user.avatar_url}`);
+        return `${API_URL}${avatarUrl.startsWith("/") ? avatarUrl : `/${avatarUrl}`}`;
     };
 
-    const avatarSrc = getAvatarSrc();
+    const avatarSrc = getAvatarSrc(currentUser?.avatar_url);
 
     return (
         <div className={`sidebar_movietracker ${sidebarOpen ? "open" : "collapsed"}`}>

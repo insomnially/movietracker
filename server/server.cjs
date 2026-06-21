@@ -58,9 +58,11 @@ app.use("/posters2", express.static(staticFolder("posters2")));
 app.use("/series_posters", express.static(staticFolder("series_posters")));
 app.use("/anime_posters", express.static(staticFolder("anime_posters")));
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(process.cwd(), "public", "uploads")));
 
-const avatarDir = path.join(__dirname, "uploads", "avatars");
+const avatarDir = process.env.VERCEL
+    ? path.join("/tmp", "avatars")
+    : path.join(process.cwd(), "public", "uploads", "avatars");
 
 if (!process.env.VERCEL && !fs.existsSync(avatarDir)) {
     fs.mkdirSync(avatarDir, { recursive: true });
@@ -77,7 +79,7 @@ const avatarStorage = multer.diskStorage({
 });
 
 const uploadAvatar = multer({
-    storage: avatarStorage,
+    storage: multer.memoryStorage(),
     limits: {
         fileSize: 5 * 1024 * 1024
     },
@@ -703,18 +705,22 @@ app.get("/api/user", authMiddleware, async (req, res) => {
 
 app.put("/api/user/avatar", authMiddleware, uploadAvatar.single("avatar"), async (req, res) => {
     try {
-        if (process.env.VERCEL) {
-            return res.status(501).json({
-                message: "Загрузка аватарок на Vercel пока отключена"
-            });
-        }
-
         if (!req.file) {
             return res.status(400).json({ message: "Файл не загружен" });
         }
 
+        const { put } = await import("@vercel/blob");
+
         const userId = req.user.id;
-        const avatarUrl = `/uploads/avatars/${req.file.filename}`;
+        const ext = path.extname(req.file.originalname) || ".jpg";
+        const filename = `avatars/avatar_${userId}_${Date.now()}${ext}`;
+
+        const blob = await put(filename, req.file.buffer, {
+            access: "public",
+            contentType: req.file.mimetype
+        });
+
+        const avatarUrl = blob.url;
 
         const result = await pool.query(
             `UPDATE users
