@@ -285,6 +285,15 @@
     transition: 0.2s ease;
 }
 
+.settings-option:disabled {
+    cursor: default;
+    opacity: 1;
+}
+
+.settings-option:disabled:hover {
+    transform: none;
+}
+
 .settings-danger-btn:hover {
     background: rgba(255, 76, 76, 0.26);
     transform: translateY(-2px);

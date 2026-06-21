@@ -6,6 +6,7 @@ import MovieDetails from "../../components/MovieDetails/MovieDetails.jsx";
 import Preloader from "../../components/Preloader/Preloader.jsx";
 import { useAuth } from "../../context/AuthContext";
 import { deleteMediaStatus, getMediaStatuses, saveMediaStatus } from "../../../api/mediaStatuses.jsx";
+import { useDetailsMode } from "../../hooks/useDetailsMode.js";
 
 import { API_URL } from '../../../api.js'
 
@@ -142,6 +143,7 @@ const sortOptions = [
 
 function CatalogPage() {
     const { token, isAuth } = useAuth();
+    const { effectiveMode } = useDetailsMode();
 
     const [activeSection, setActiveSection] = useState("movies");
     const [items, setItems] = useState([]);
@@ -406,6 +408,27 @@ function CatalogPage() {
             return;
         }
 
+        const renderDetails = () => {
+        if (!selectedItem) {
+            return null;
+        }
+
+        return (
+            <MovieDetails
+                item={selectedItem}
+                getPosterSrc={getPosterSrc}
+                getTypeLabel={getTypeLabel}
+                scrollToSelected={scrollToSelectedCard}
+                onClose={() => setSelectedItem(null)}
+                variant="catalog"
+                isAuth={isAuth}
+                statusOptions={statusOptions}
+                currentStatus={selectedStatus}
+                onStatusChange={handleStatusChange}
+            />
+        );
+    };
+
         const normalizedItem = normalizeItem(item);
         const itemKey = getMediaKey(normalizedItem);
 
@@ -656,7 +679,7 @@ function CatalogPage() {
                 </section>
             )}
 
-            <section className={`catalog-content ${selectedItem ? "details-open" : ""}`}>
+            <section className={`catalog-content ${selectedItem && effectiveMode === "section" ? "details-open" : ""}`}>
                 <div className="catalog-list">
                     <div className="catalog-list-top">
                         <h2>
@@ -735,7 +758,7 @@ function CatalogPage() {
                     )}
                 </div>
 
-                {selectedItem && (
+                {selectedItem && effectiveMode === "section" && renderDetails(
                     <MovieDetails
                         item={selectedItem}
                         getPosterSrc={getPosterSrc}
@@ -750,6 +773,14 @@ function CatalogPage() {
                     />
                 )}
             </section>
+
+            {selectedItem && effectiveMode === "modal" && (
+                <div className="details-modal-overlay" onClick={() => setSelectedItem(null)}>
+                    <div className="details-modal-window" onClick={(e) => e.stopPropagation()}>
+                        {renderDetails()}
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

@@ -716,6 +716,46 @@
     pointer-events: none;
 }
 
+.details-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.72);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+.details-modal-window {
+    width: min(1120px, 100%);
+    max-height: 92vh;
+    overflow-y: auto;
+    background: #121722;
+    border-radius: 28px;
+    padding: 24px;
+}
+
+.details-modal-window .movie-details,
+.details-modal-window .details-section {
+    width: 100%;
+    max-width: none;
+}
+
+@media (max-width: 1024px), (pointer: coarse) {
+    .details-modal-overlay {
+        padding: 0;
+        align-items: stretch;
+    }
+
+    .details-modal-window {
+        width: 100%;
+        max-height: 100vh;
+        border-radius: 0;
+        padding: 16px;
+    }
+}
+
 @media (max-width: 760px) {
     .catalog-search {
         flex-direction: column;

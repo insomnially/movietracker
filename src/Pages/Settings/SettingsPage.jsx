@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useSettings } from "../../context/SettingsContext.jsx";
 import "./SettingsPage.css";
+import { useDetailsMode } from "../../hooks/useDetailsMode.js";
 
 const cardSizeOptions = [
     {
@@ -99,6 +100,7 @@ const accentOptions = [
 function SettingsPage() {
     const { user, logout } = useAuth();
     const { settings, updateSetting, resetSettings } = useSettings();
+    const { forceModal } = useDetailsMode();
     const [saved, setSaved] = useState(false);
 
     useEffect(() => {
@@ -114,6 +116,10 @@ function SettingsPage() {
     const handleSettingChange = (key, value) => {
         updateSetting(key, value);
     };
+
+    const availableDetailsPositionOptions = forceModal
+    ? detailsPositionOptions.filter((option) => option.value === "modal")
+    : detailsPositionOptions;
 
     return (
         <main className="settings-page">
@@ -169,7 +175,7 @@ function SettingsPage() {
                     </button>
                 </div>
 
-                                    <div className="settings-card">
+                <div className="settings-card">
                     <div className="settings-card-head">
                         <div>
                             <p>Тема</p>
@@ -224,15 +230,28 @@ function SettingsPage() {
                     </div>
 
                     <div className="settings-options">
-                        {detailsPositionOptions.map((option) => (
+                        {availableDetailsPositionOptions.map((option) => (
                             <button
                                 key={option.value}
                                 type="button"
-                                className={`settings-option ${settings.detailsPosition === option.value ? "active" : ""}`}
-                                onClick={() => handleSettingChange("detailsPosition", option.value)}
+                                disabled={forceModal}
+                                className={`settings-option ${
+                                    forceModal
+                                        ? option.value === "modal" ? "active" : ""
+                                        : settings.detailsPosition === option.value ? "active" : ""
+                                }`}
+                                onClick={() => {
+                                    if (!forceModal) {
+                                        handleSettingChange("detailsPosition", option.value);
+                                    }
+                                }}
                             >
                                 <strong>{option.title}</strong>
-                                <span>{option.text}</span>
+                                <span>
+                                    {forceModal
+                                        ? "На этом устройстве детали всегда открываются модальным окном"
+                                        : option.text}
+                                </span>
                             </button>
                         ))}
                     </div>
