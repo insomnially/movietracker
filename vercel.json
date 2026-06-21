@@ -1,5 +1,24 @@
 {
     "version": 2,
+    "functions": {
+        "api/index.js": {
+            "excludeFiles": [
+                "public/posters2/**",
+                "public/series_posters/**",
+                "public/anime_posters/**",
+                "public/uploads/**",
+                "posters2/**",
+                "series_posters/**",
+                "anime_posters/**",
+                "uploads/**",
+                "node_modules/.cache/**",
+                "dist/**",
+                "*.csv",
+                "*.dump",
+                "*.sql"
+            ]
+        }
+    },
     "routes": [
         {
             "src": "/api/(.*)",
