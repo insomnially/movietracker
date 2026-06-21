@@ -2,11 +2,10 @@ import Preloader from "../../components/Preloader/Preloader";
 import { Link, useNavigate } from "react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getMediaStatuses } from "../../../api/mediaStatuses";
+import { getMediaStatuses } from "../../api/mediaStatuses";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import "./ProfilePage.css";
-
-import { API_URL } from '../../../api'
+import { API_URL } from "../../api";
 
 const statusNames = {
     favorite: "Хочу посмотреть",
@@ -52,7 +51,7 @@ function ProfilePage() {
         };
 
         loadProfileUser();
-    }, [token]);
+    }, [token, user]);
 
     useEffect(() => {
         const loadStats = async () => {
@@ -60,7 +59,9 @@ function ProfilePage() {
                 setLoading(true);
 
                 const data = await getMediaStatuses(token);
-                setItems(data);
+                const rows = Array.isArray(data) ? data : data?.results || [];
+
+                setItems(rows);
             } catch (error) {
                 console.error(error);
                 setItems([]);
@@ -86,7 +87,7 @@ function ProfilePage() {
     const currentUser = profileUser || user;
 
     const getAvatarSrc = (avatarUrl) => {
-        if (!avatarUrl) return "/images/default-avatar.png";
+        if (!avatarUrl) return null;
 
         if (avatarUrl.startsWith("http")) {
             return avatarUrl;
@@ -94,6 +95,8 @@ function ProfilePage() {
 
         return `${API_URL}${avatarUrl.startsWith("/") ? avatarUrl : `/${avatarUrl}`}`;
     };
+
+    const avatarSrc = getAvatarSrc(currentUser?.avatar_url);
 
     const getUserLetter = () => {
         return currentUser?.name?.[0]?.toUpperCase() || "U";
@@ -106,7 +109,7 @@ function ProfilePage() {
     const handleAvatarChange = async (e) => {
         const file = e.target.files[0];
 
-        if (!file) return;
+        if (!file || !token) return;
 
         try {
             setAvatarLoading(true);
@@ -144,13 +147,14 @@ function ProfilePage() {
         navigate("/login");
     };
 
-    const avatarSrc = getAvatarSrc(currentUser?.avatar_url);
-
     return (
         <main className="profile-page">
             <div className="back-from-settings">
-                <Link to="/movietracker"><IoIosArrowRoundBack /></Link>
+                <Link to="/movietracker">
+                    <IoIosArrowRoundBack />
+                </Link>
             </div>
+
             <section className="profile-hero">
                 <div className="profile-avatar-box">
                     <button
@@ -225,8 +229,8 @@ function ProfilePage() {
                     <h2>Моя статистика</h2>
 
                     {loading ? (
-                            <Preloader text="Загружаем статистику" variant="small" />
-                        ) : (
+                        <Preloader text="Загружаем статистику" variant="small" />
+                    ) : (
                         <div className="profile-stats">
                             <div>
                                 <span>Всего</span>

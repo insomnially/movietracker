@@ -50,6 +50,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
         return fullName || user.username || user.email || "Профиль";
     };
 
+    const currentUser = profileUser || user;
+
     const getAvatarSrc = (avatarUrl) => {
         if (!avatarUrl) return "/images/default-avatar.png";
 
