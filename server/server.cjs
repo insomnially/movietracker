@@ -57,11 +57,12 @@ function staticFolder(folderName) {
     return found;
 }
 
-app.use("/posters2", express.static(staticFolder("posters2")));
-app.use("/series_posters", express.static(staticFolder("series_posters")));
-app.use("/anime_posters", express.static(staticFolder("anime_posters")));
-
-app.use("/uploads", express.static(path.join(process.cwd(), "public", "uploads")));
+if (!process.env.VERCEL) {
+    app.use("/posters2", express.static(staticFolder("posters2")));
+    app.use("/series_posters", express.static(staticFolder("series_posters")));
+    app.use("/anime_posters", express.static(staticFolder("anime_posters")));
+    app.use("/uploads", express.static(path.join(process.cwd(), "public", "uploads")));
+}
 
 const avatarDir = process.env.VERCEL
     ? path.join("/tmp", "avatars")
